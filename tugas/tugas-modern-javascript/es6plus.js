@@ -175,15 +175,3 @@ const data2 = [
 console.log(graduate(data1));
 console.log(graduate(data2));
 
-const test = (name, age, gender, job) => {
-    if (gender == "Laki-laki") {
-        return `Pak ${name} adalah seorang ${job} yang berusia ${age} tahun`
-    } else {
-        return `Bu ${name} adalah seorang ${job} yang berusia ${age} tahun`
-    }
-    
-}
-const kenal = test("john", "30", "Laki-laki", "penulis")
-console.log(kenal)
-
-console.log('-----------------------------------')
