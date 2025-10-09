@@ -26,7 +26,7 @@ HitungLingkarang(7)
 
 // Currying function
 function tambah(a, b) {
-    return a+ b
+    return a + b
 } // Sebelum menerapkan currying function
 
 console.log(tambah(2,2))
