@@ -64,9 +64,8 @@ console.log("-----------------------------------");
  */
 
 class Clock {
-  constructor({ template }, timer) {
+  constructor({ template }) {
     this.template = template;
-    this.timer = timer;
   }
 
   render() {
