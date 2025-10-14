@@ -4,6 +4,9 @@ const { router } = require("./src/routes/main");
 
 const app = express();
 
+app.use(express.json()); // untuk JSON
+// app.use(express.urlencoded({ extended: true }));
+
 app.use("/api", router);
 
 app.use((req, res) => {

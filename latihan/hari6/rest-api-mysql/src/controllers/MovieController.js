@@ -1,3 +1,5 @@
+const { conn } = require("../config/db");
+
 let movies = [
   { id: 1, title: "Spider-Man", year: 2002 },
   { id: 2, title: "John Wick", year: 2014 },
@@ -43,7 +45,26 @@ const getMovieById = (req, res) => {
   });
 };
 
+const store = (req, res) => {
+  let { title, year } = req.body;
+
+  const query = `INSERT INTO movies (title, year, created_at, updated_at) VALUES ('${title}', ${year}, NOW(), NOW())`;
+
+  conn.query(query, (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+  });
+
+  return res.status(201).json({
+    status: true,
+    message: "Success create movie",
+  });
+};
+
 module.exports = {
   getMovies,
   getMovieById,
+  store,
 };
