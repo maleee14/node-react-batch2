@@ -1,61 +1,15 @@
 const express = require("express");
-const { conn } = require("./src/config/db.js");
+const { conn } = require("./src/config/db");
+const { router } = require("./src/routes/main");
 
 const app = express();
-const port = 3000;
 
-let movies = [
-  { id: 1, title: "Spider-Man", year: 2002 },
-  { id: 2, title: "John Wick", year: 2014 },
-  { id: 3, title: "The Avengers", year: 2012 },
-  { id: 4, title: "Logan", year: 2017 },
-];
+app.use("/api", router);
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
+app.use((req, res) => {
+  res.status(404).json({ message: "404 Not Found" });
 });
 
-const getMovies = (req, res) => {
-  let { title } = req.query;
-  let result = "";
-
-  result = movies.map((movie) => ({
-    id: movie.id,
-    title: movie.title,
-    year: movie.year,
-  }));
-
-  if (title) {
-    result = result.find((re) =>
-      re.title.toLowerCase().includes(title.toLowerCase())
-    );
-  }
-
-  return res.json({
-    message: "Ini adalah tampilan data movie",
-    result,
-  });
-};
-
-const getMovieById = (req, res) => {
-  let { id } = req.params;
-
-  const movie = movies.find((movie) => movie.id === Number(id));
-
-  if (!movie) {
-    return res.json({
-      message: "Movie not found",
-    });
-  }
-
-  return res.json({
-    movie,
-  });
-};
-
-app.get("/movie", getMovies);
-app.get("/movie/:id", getMovieById);
-
 app.listen(process.env.PORT, () => {
-  console.log(`App listening on port http://localhost:${port}`);
+  console.log(`App listening on port http://localhost:${process.env.PORT}`);
 });
