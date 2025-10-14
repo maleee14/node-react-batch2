@@ -14,25 +14,46 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.get("/peserta/:name", (req, res) => {
-  res.send(`Halo Selamat Datang ${req.params.name}`);
-});
-
 const getMovies = (req, res) => {
+  let { title } = req.query;
   let result = "";
 
   result = movies.map((movie) => ({
+    id: movie.id,
     title: movie.title,
     year: movie.year,
   }));
 
-  res.json({
+  if (title) {
+    result = result.find((re) =>
+      re.title.toLowerCase().includes(title.toLowerCase())
+    );
+  }
+
+  return res.json({
     message: "Ini adalah tampilan data movie",
     result,
   });
 };
 
+const getMovieById = (req, res) => {
+  let { id } = req.params;
+
+  const movie = movies.find((movie) => movie.id === Number(id));
+
+  if (!movie) {
+    return res.json({
+      message: "Movie not found",
+    });
+  }
+
+  return res.json({
+    movie,
+  });
+};
+
 app.get("/movie", getMovies);
+app.get("/movie/:id", getMovieById);
 
 app.listen(port, () => {
   console.log(`App listening on port http://localhost:${port}`);
