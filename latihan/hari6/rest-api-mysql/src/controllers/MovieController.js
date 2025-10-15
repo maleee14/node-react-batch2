@@ -1,47 +1,26 @@
 const { conn } = require("../config/db");
 
-let movies = [
-  { id: 1, title: "Spider-Man", year: 2002 },
-  { id: 2, title: "John Wick", year: 2014 },
-  { id: 3, title: "The Avengers", year: 2012 },
-  { id: 4, title: "Logan", year: 2017 },
-];
+const index = (req, res) => {
+  const query = "SELECT * FROM movies";
 
-const getMovies = (req, res) => {
-  let { title } = req.query;
-  let result = "";
+  conn.query(query, (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
 
-  result = movies.map((movie) => ({
-    id: movie.id,
-    title: movie.title,
-    year: movie.year,
-  }));
+    const movies = data.map((movie) => ({
+      title: movie.title,
+      year: movie.year,
+      created_at: movie.created_at,
+      updated_at: movie.updated_at,
+    }));
 
-  if (title) {
-    result = result.find((re) =>
-      re.title.toLowerCase().includes(title.toLowerCase())
-    );
-  }
-
-  return res.json({
-    message: "Ini adalah tampilan data movie",
-    result,
-  });
-};
-
-const getMovieById = (req, res) => {
-  let { id } = req.params;
-
-  const movie = movies.find((movie) => movie.id === Number(id));
-
-  if (!movie) {
-    return res.json({
-      message: "Movie not found",
+    return res.status(200).json({
+      status: true,
+      message: "Success get all movie",
+      movies,
     });
-  }
-
-  return res.json({
-    movie,
   });
 };
 
@@ -63,8 +42,66 @@ const store = (req, res) => {
   });
 };
 
+const show = (req, res) => {
+  const { id } = req.params;
+
+  const query = `SELECT * FROM movies WHERE id=${id}`;
+
+  conn.query(query, (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Success get movie",
+      movie: data,
+    });
+  });
+};
+
+const update = (req, res) => {
+  const { title, year } = req.body;
+  const { id } = req.params;
+
+  const query = `UPDATE movies SET title='${title}', year=${year}, created_at=NOW(), updated_at=NOW() WHERE id=${id}`;
+
+  conn.query(query, (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Success update movie",
+    });
+  });
+};
+
+const destory = (req, res) => {
+  const { id } = req.params;
+
+  const query = `DELETE FROM movies WHERE id=${id}`;
+
+  conn.query(query, (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Success delete movie",
+    });
+  });
+};
+
 module.exports = {
-  getMovies,
-  getMovieById,
+  index,
   store,
+  show,
+  update,
+  destory,
 };
