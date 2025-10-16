@@ -1,0 +1,10 @@
+PORT=3000
+
+DB_HOST="localhost"
+DB_USER="root"
+DB_PASS="root"
+DB_NAME="db_movie"
+
+ALLOWED_CORS_URL="http://localhost:3000,http://localhost:5000,http://localhost:8080"
+
+DATABASE_URL="mysql://johndoe:randompassword@localhost:3306/mydb"
