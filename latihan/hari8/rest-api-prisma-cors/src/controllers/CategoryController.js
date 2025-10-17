@@ -1,16 +1,16 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { isRequired } from "../middleware/validator.js";
 const prisma = new PrismaClient();
 
-class MovieController {
+class CategoryController {
   async index(req, res) {
     try {
-      const movies = await prisma.movies.findMany();
+      const categories = await prisma.categories.findMany();
 
       return res.status(200).json({
-        status: true,
-        message: "Success get all movie",
-        movies,
+        status: false,
+        message: "Success get all category",
+        categories,
       });
     } catch (error) {
       return res.status(error.code || 500).json({
@@ -22,34 +22,20 @@ class MovieController {
 
   async store(req, res) {
     try {
-      let { title, year, categoryId } = req.body;
+      const { name } = req.body;
 
-      isRequired(title, "title");
-      isRequired(year, "year");
-      isRequired(categoryId, "categoryId");
+      isRequired(name, "name");
 
-      const category = await prisma.categories.findUnique({
-        where: {
-          id: Number(categoryId),
-        },
-      });
-
-      if (!category) {
-        throw { code: 404, message: "Category not found" };
-      }
-
-      const movie = await prisma.movies.create({
+      const category = await prisma.categories.create({
         data: {
-          title,
-          year,
-          categoryId,
+          name,
         },
       });
 
       return res.status(201).json({
         status: true,
-        message: "Success create movie",
-        movie,
+        message: "Success create to create category",
+        category,
       });
     } catch (error) {
       return res.status(error.code || 500).json({
@@ -63,20 +49,20 @@ class MovieController {
     try {
       const { id } = req.params;
 
-      const movie = await prisma.movies.findUnique({
+      const category = await prisma.categories.findUnique({
         where: {
           id: Number(id),
         },
       });
 
-      if (!movie) {
-        throw { code: 404, message: "Movie not found" };
+      if (!category) {
+        throw { code: 404, message: "Category not found" };
       }
 
       return res.status(200).json({
-        status: true,
-        message: "Success get movie",
-        movie,
+        status: false,
+        message: "Success get category",
+        category,
       });
     } catch (error) {
       return res.status(error.code || 500).json({
@@ -88,48 +74,34 @@ class MovieController {
 
   async update(req, res) {
     try {
-      const { title, year, categoryId } = req.body;
+      const { name } = req.body;
       const { id } = req.params;
 
-      isRequired(title, "title");
-      isRequired(year, "year");
-      isRequired(categoryId, "categoryId");
+      isRequired(name, "name");
 
-      const exists = await prisma.movies.findUnique({
+      const exists = await prisma.categories.findUnique({
         where: {
           id: Number(id),
         },
       });
 
       if (!exists) {
-        throw { code: 404, message: "Movie not found" };
-      }
-
-      const category = await prisma.categories.findUnique({
-        where: {
-          id: Number(categoryId),
-        },
-      });
-
-      if (!category) {
         throw { code: 404, message: "Category not found" };
       }
 
-      const movie = await prisma.movies.update({
+      const category = await prisma.categories.update({
         where: {
           id: Number(id),
         },
         data: {
-          title,
-          year,
-          categoryId,
+          name,
         },
       });
 
       return res.status(200).json({
-        status: true,
-        message: "Success update movie",
-        movie,
+        status: false,
+        message: "Success to update category",
+        category,
       });
     } catch (error) {
       return res.status(error.code || 500).json({
@@ -143,17 +115,17 @@ class MovieController {
     try {
       const { id } = req.params;
 
-      const exists = await prisma.movies.findUnique({
+      const exists = await prisma.categories.findUnique({
         where: {
           id: Number(id),
         },
       });
 
       if (!exists) {
-        throw { code: 404, message: "Movie not found" };
+        throw { code: 404, message: "Category not found" };
       }
 
-      const movie = await prisma.movies.delete({
+      const category = await prisma.categories.delete({
         where: {
           id: Number(id),
         },
@@ -161,7 +133,7 @@ class MovieController {
 
       return res.status(200).json({
         status: true,
-        message: "Success delete movie",
+        message: "Success to delete category",
       });
     } catch (error) {
       return res.status(error.code || 500).json({
@@ -172,4 +144,4 @@ class MovieController {
   }
 }
 
-export default new MovieController();
+export default new CategoryController();
