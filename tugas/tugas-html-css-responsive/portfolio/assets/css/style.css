@@ -8,6 +8,7 @@
 body {
   margin-top: 8em;
 }
+
 #container {
   width: 100%;
   height: auto;
@@ -94,8 +95,8 @@ a {
 }
 
 .container-wrapping__card {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .container-wrapping__card img {
