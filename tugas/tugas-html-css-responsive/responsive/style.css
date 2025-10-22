@@ -14,6 +14,10 @@
   margin-bottom: 5px;
 }
 
+.icon i {
+  margin: 0px 5px;
+}
+
 /* Buatlah styling section container dan card dibawah ini */
 .container {
   display: grid;
