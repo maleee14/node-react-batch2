@@ -47,7 +47,7 @@ class MovieController {
           title,
           year,
           categoryId,
-          userId: req.user.id,
+          // userId: req.user.id ?? null,
         },
       });
 
