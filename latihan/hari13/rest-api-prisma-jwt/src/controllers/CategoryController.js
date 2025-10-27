@@ -29,7 +29,7 @@ class CategoryController {
       const category = await prisma.categories.create({
         data: {
           name,
-          userId: req.user.id,
+          // userId: req.user.id ?? null,
         },
       });
 

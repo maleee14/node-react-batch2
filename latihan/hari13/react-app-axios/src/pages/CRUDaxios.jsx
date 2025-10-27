@@ -111,13 +111,13 @@ function CRUDaxios() {
         const response = await axios.post("http://localhost:3000/api/movies", {
           title,
           year: Number(year),
-          categoryId: Number(catId),
+          categoryId: Number(catId || categories[0]?.id),
         });
 
         fetchData();
         fetchCategory();
 
-        return response;
+        // return response;
       }
     } catch (error) {
       console.log(error);
@@ -137,7 +137,7 @@ function CRUDaxios() {
   return (
     <>
       <h1 className="font-bold my-5">
-        <span className="text-white">CRUD Axios</span>
+        <span className="text-white">Movies</span>
       </h1>
       <div className="crud-page">
         <div className="crud-form">
@@ -172,9 +172,9 @@ function CRUDaxios() {
                 value={catId}
                 onChange={handleCategoryChange}
               >
-                <option value="" selected disabled>
+                {/* <option value="" selected disabled>
                   Pick a Category
-                </option>
+                </option> */}
                 {categories.map((cat, index) => (
                   <option key={index} value={cat.id}>
                     {cat.name}
@@ -200,9 +200,9 @@ function CRUDaxios() {
           </form>
         </div>
         <div className="crud-table">
-          <div className="h-100 overflow-x-auto">
+          <div className="h-80 overflow-x-auto">
             <table className="table table-zebra">
-              <thead className="sticky top-0 bg-base-100">
+              <thead className="sticky top-0 bg-base-100 text-center">
                 <tr>
                   <th>No</th>
                   <th>Title</th>

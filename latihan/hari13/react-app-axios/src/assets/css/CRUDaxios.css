@@ -3,7 +3,8 @@
 
 .crud-page {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  /* justify-content: space-betwen; */
   gap: 20px;
 }
 

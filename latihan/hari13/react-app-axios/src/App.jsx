@@ -1,11 +1,11 @@
 import "./App.css";
 import CRUDaxios from "./pages/CRUDaxios";
-import Home from "./pages/Home";
+import MainRoutes from "./routes/MainRoutes";
 
 function App() {
   return (
     <>
-      <CRUDaxios />
+      <MainRoutes />
     </>
   );
 }
