@@ -7,6 +7,10 @@ function Category() {
   const [name, setName] = useState("");
   const [isUpdated, setIsUpdate] = useState(false);
 
+  // State untuk pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(4);
+
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/categories");
@@ -20,9 +24,8 @@ function Category() {
     fetchData();
   }, []);
 
-  const handleNameChange = async (e) => {
+  const handleNameChange = (e) => {
     setName(e.target.value);
-    console.log(name);
   };
 
   const handleSubmit = async (e) => {
@@ -30,27 +33,12 @@ function Category() {
 
     try {
       if (isUpdated) {
-        const response = await axios.put(
-          `http://localhost:3000/api/categories/${id}`,
-          {
-            name,
-          }
-        );
-
-        setId("");
-        setName("");
-        setIsUpdate(false);
-        fetchData();
+        await axios.put(`http://localhost:3000/api/categories/${id}`, { name });
+        clearData();
       } else {
-        const response = await axios.post(
-          "http://localhost:3000/api/categories",
-          {
-            name,
-          }
-        );
-
-        fetchData();
+        await axios.post("http://localhost:3000/api/categories", { name });
       }
+      fetchData();
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +53,6 @@ function Category() {
 
       setName(data.name);
       setId(data.id);
-
       setIsUpdate(true);
     } catch (error) {
       console.log(error);
@@ -74,14 +61,31 @@ function Category() {
 
   const deleteData = async (id) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:3000/api/categories/${id}`
-      );
-
+      await axios.delete(`http://localhost:3000/api/categories/${id}`);
       fetchData();
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const clearData = () => {
+    setId("");
+    setName("");
+    setIsUpdate(false);
+  };
+
+  // 🔹 Logic pagination di frontend
+  const totalPages = Math.ceil(categories.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedData = categories.slice(startIndex, endIndex);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   return (
@@ -91,7 +95,6 @@ function Category() {
       </h1>
       <div className="crud-page">
         <div className="crud-form justify-center">
-          {/* <p className="error-text">{errorMessage}</p> */}
           <form onSubmit={handleSubmit}>
             <fieldset className="fieldset">
               <legend className="fieldset-legend">Category Name?</legend>
@@ -107,9 +110,9 @@ function Category() {
             {isUpdated ? (
               <div className="flex justify-around">
                 <button className="btn btn-info" type="submit">
-                  Submit
+                  Update
                 </button>
-                <button className="btn btn-error" onClick={() => clearData()}>
+                <button className="btn btn-error" onClick={clearData}>
                   Cancel
                 </button>
               </div>
@@ -120,6 +123,7 @@ function Category() {
             )}
           </form>
         </div>
+
         <div className="crud-table">
           <div className="h-80 overflow-x-auto">
             <table className="table table-zebra">
@@ -131,9 +135,9 @@ function Category() {
                 </tr>
               </thead>
               <tbody>
-                {categories.map((category, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
+                {paginatedData.map((category, index) => (
+                  <tr key={category.id}>
+                    <td>{startIndex + index + 1}</td>
                     <td>{category.name}</td>
                     <td>
                       <div className="button-group space-x-4">
@@ -155,6 +159,25 @@ function Category() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* 🔹 Pagination */}
+          <div className="flex justify-center mx-auto space-x-5 mt-4">
+            <button
+              className="btn btn-accent btn-sm"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              «
+            </button>
+            <p>{currentPage}</p>
+            <button
+              className="btn btn-accent btn-sm"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              »
+            </button>
           </div>
         </div>
       </div>

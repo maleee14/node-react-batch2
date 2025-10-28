@@ -12,6 +12,9 @@ function CRUDaxios() {
   const [isUpdated, setIsUpdate] = useState(false);
   const [movieId, setMovieId] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(4);
+
   const fetchData = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/movies");
@@ -134,6 +137,20 @@ function CRUDaxios() {
     setIsUpdate(false);
   };
 
+  // 🔹 Logic pagination di frontend
+  const totalPages = Math.ceil(movies.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedData = movies.slice(startIndex, endIndex);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
   return (
     <>
       <h1 className="font-bold my-5">
@@ -212,9 +229,9 @@ function CRUDaxios() {
                 </tr>
               </thead>
               <tbody>
-                {movies.map((movie, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
+                {paginatedData.map((movie, index) => (
+                  <tr key={movie.id}>
+                    <td>{startIndex + index + 1}</td>
                     <td>{movie.title}</td>
                     <td>{movie.year}</td>
                     <td>{movie.category.name || "-"}</td>
@@ -238,6 +255,25 @@ function CRUDaxios() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* 🔹 Pagination */}
+          <div className="flex justify-center mx-auto space-x-5 mt-4">
+            <button
+              className="btn btn-accent btn-sm"
+              onClick={handlePrevPage}
+              disabled={currentPage === 1}
+            >
+              «
+            </button>
+            <p>{currentPage}</p>
+            <button
+              className="btn btn-accent btn-sm"
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              »
+            </button>
           </div>
         </div>
       </div>
